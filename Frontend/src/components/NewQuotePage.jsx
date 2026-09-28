@@ -14,22 +14,37 @@ import {
   Check,
   ArrowLeft,
   Sparkles,
+  Plus,
+  Search,
+  Filter,
+  UserCheck,
+  Eye,
+  FilePlus,
+  RefreshCw,
 } from "lucide-react";
 import {
   INITIAL_VEHICLE_MASTER,
   CITY_ZONES,
   ADDONS_MASTER,
+  INITIAL_QUOTES,
 } from "../data/mockData";
 
 export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
+  // Mode State: false = Show Customer & Quotes Table View (default); true = 5-Step Generator
+  const [isCreatingQuote, setIsCreatingQuote] = useState(false);
   const [step, setStep] = useState(1);
+
+  // Table State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [quotesList, setQuotesList] = useState(INITIAL_QUOTES);
 
   // Form State - Customer
   const [customerName, setCustomerName] = useState("Rahul Sharma");
   const [customerPhone, setCustomerPhone] = useState("9876543210");
   const [customerEmail, setCustomerEmail] = useState("rahul@gmail.com");
   const [selectedCity, setSelectedCity] = useState("Mumbai");
-  const [isExistingCustomer, setIsExistingCustomer] = useState(false);
+  const [isExistingCustomer, setIsExistingCustomer] = useState(true);
 
   // Vehicle Selection
   const [selectedMake, setSelectedMake] = useState("Hyundai");
@@ -43,6 +58,37 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
   // Selected Addons
   const [selectedAddonIds, setSelectedAddonIds] = useState(["zero_dep", "rsa"]);
 
+  // Start quote wizard for a specific existing customer from the table
+  const handleStartQuoteForCustomer = (cust) => {
+    if (cust) {
+      setCustomerName(cust.customer || cust.name || "Customer");
+      setCustomerPhone(cust.phone || cust.mobile || "9876543210");
+      setCustomerEmail(cust.email || "customer@example.com");
+      if (cust.city) setSelectedCity(cust.city);
+      if (cust.vehicle) {
+        const parts = cust.vehicle.split(" ");
+        if (parts.length >= 2) {
+          setSelectedMake(parts[0]);
+          setSelectedModel(parts[1]);
+        }
+      }
+    }
+    setStep(1);
+    setIsCreatingQuote(true);
+  };
+
+  // Start fresh blank quote wizard
+  const handleAddNewQuote = () => {
+    setCustomerName("Rahul Sharma");
+    setCustomerPhone("9876543210");
+    setCustomerEmail("rahul@gmail.com");
+    setSelectedCity("Mumbai");
+    setSelectedMake("Hyundai");
+    setSelectedModel("Creta");
+    setStep(1);
+    setIsCreatingQuote(true);
+  };
+
   const currentVehicle = useMemo(() => {
     return (
       INITIAL_VEHICLE_MASTER.find(
@@ -52,8 +98,6 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
   }, [selectedMake, selectedModel]);
 
   const vehicleAgeYears = Math.max(1, 2026 - Number(regYear));
-
-  // Premium Calculations
   const exShowroom = currentVehicle.exShowroom;
   
   const idv = useMemo(() => {
@@ -114,8 +158,26 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
       idv: idv,
       addons: selectedAddonIds,
     };
-    onSaveQuote(newQuoteObj);
+    
+    setQuotesList([newQuoteObj, ...quotesList]);
+    if (onSaveQuote) onSaveQuote(newQuoteObj);
+    setIsCreatingQuote(false);
   };
+
+  const filteredQuotes = useMemo(() => {
+    return quotesList.filter((item) => {
+      const matchesSearch =
+        item.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.city.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "All" || item.status.toLowerCase() === statusFilter.toLowerCase();
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [quotesList, searchQuery, statusFilter]);
 
   const steps = [
     { num: 1, label: "Customer" },
@@ -125,29 +187,234 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
     { num: 5, label: "Generate Quote" },
   ];
 
+  // -------------------------------------------------------------
+  // DEFAULT VIEW: EXISTING CUSTOMERS & QUOTES TABLE
+  // -------------------------------------------------------------
+  if (!isCreatingQuote) {
+    return (
+      <div className="space-y-6 pb-12 animate-in fade-in duration-200">
+        
+        {/* Header Bar with "+ Add New Quote" Button at Top */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Existing Customer Quotes</h1>
+              <span className="bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-100">
+                {quotesList.length} Active Records
+              </span>
+            </div>
+            <p className="text-sm text-slate-500 font-medium mt-1">
+              Select an existing customer to generate a motor quote or click Add New Quote to start fresh.
+            </p>
+          </div>
+
+          {/* Primary Top Action Button */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleAddNewQuote}
+              className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-500/25 flex items-center gap-2 transition-all transform active:scale-95"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>Add New Quote</span>
+            </button>
+
+            {onBackToDashboard && (
+              <button
+                onClick={onBackToDashboard}
+                className="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl border border-slate-200 flex items-center gap-2 transition-all"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>Dashboard</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter and Search Bar */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          
+          {/* Search Box */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search by customer name, quote ID, vehicle, or city..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+            />
+          </div>
+
+          {/* Status Filter Badges */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+            {["All", "Sent", "Converted", "Draft", "Expired"].map((st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  statusFilter === st
+                    ? "bg-slate-900 text-white shadow-sm"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
+        </div>
+
+        {/* Dummy Data Table */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead>
+                <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <th className="py-4 px-6">Quote ID & Customer</th>
+                  <th className="py-4 px-4">Contact & Location</th>
+                  <th className="py-4 px-4">Vehicle Details</th>
+                  <th className="py-4 px-4">Insured IDV</th>
+                  <th className="py-4 px-4">Premium</th>
+                  <th className="py-4 px-4">Status</th>
+                  <th className="py-4 px-6 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-sm font-medium">
+                {filteredQuotes.length > 0 ? (
+                  filteredQuotes.map((quote) => (
+                    <tr key={quote.id} className="hover:bg-blue-50/30 transition-colors">
+                      
+                      {/* Customer Name & ID */}
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-full ${quote.avatarBg} font-bold text-xs flex items-center justify-center shrink-0 shadow-sm`}>
+                            {quote.avatar}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-900 leading-tight">{quote.customer}</h4>
+                            <span className="text-xs text-slate-400 font-medium font-mono">{quote.id}</span>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Contact & City */}
+                      <td className="py-4 px-4">
+                        <div className="text-xs text-slate-700 font-medium space-y-0.5">
+                          <p className="font-semibold text-slate-900">{quote.phone}</p>
+                          <p className="text-slate-400 truncate max-w-[150px]">{quote.email}</p>
+                          <span className="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold">
+                            {quote.city}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Vehicle */}
+                      <td className="py-4 px-4">
+                        <div>
+                          <p className="font-bold text-slate-800 text-sm">{quote.vehicle}</p>
+                          <span className="text-xs text-slate-400 font-medium">Fuel: {quote.fuel} ({quote.year})</span>
+                        </div>
+                      </td>
+
+                      {/* IDV */}
+                      <td className="py-4 px-4 font-bold text-slate-700">
+                        ₹{quote.idv ? quote.idv.toLocaleString("en-IN") : "8,50,000"}
+                      </td>
+
+                      {/* Premium */}
+                      <td className="py-4 px-4">
+                        <span className="font-black text-blue-700 text-base">
+                          ₹{quote.premium.toLocaleString("en-IN")}
+                        </span>
+                      </td>
+
+                      {/* Status Badge */}
+                      <td className="py-4 px-4">
+                        <span className={`px-3 py-1 rounded-full border text-xs font-bold ${quote.statusColor}`}>
+                          {quote.status}
+                        </span>
+                      </td>
+
+                      {/* Action Buttons */}
+                      <td className="py-4 px-6 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => handleStartQuoteForCustomer(quote)}
+                            className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                            title="Generate a new quote for this customer"
+                          >
+                            <FilePlus className="w-3.5 h-3.5" />
+                            <span>Create Quote</span>
+                          </button>
+
+                          <button
+                            onClick={() => alert(`Viewing full details for ${quote.customer} (${quote.id})`)}
+                            className="p-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors"
+                            title="View Quote Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="py-12 text-center text-slate-400">
+                      <p className="text-lg font-bold text-slate-600">No quotes found</p>
+                      <p className="text-sm mt-1">Try adjusting your search query or status filter.</p>
+                      <button
+                        onClick={handleAddNewQuote}
+                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md"
+                      >
+                        + Create New Quote
+                      </button>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table Footer Stats */}
+          <div className="bg-slate-50 px-6 py-3 border-t border-slate-200 text-xs font-semibold text-slate-500 flex justify-between items-center">
+            <span>Showing {filteredQuotes.length} of {quotesList.length} customer records</span>
+            <span>InsureAI Copilot active</span>
+          </div>
+        </div>
+
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
+  // 5-STEP QUOTE GENERATOR VIEW (when isCreatingQuote === true)
+  // -------------------------------------------------------------
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-200">
       
-      {/* Top Page Header */}
+      {/* Generator Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Create New Motor Quote</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Motor Quote Engine Wizard</h1>
             <span className="bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full border border-blue-100">
-              Motor Insurance
+              5-Step Assistant
             </span>
           </div>
           <p className="text-sm text-slate-500 font-medium mt-1">
-            Follow the step-by-step assistant to calculate IDV, customize add-ons, and compare plans.
+            Calculating IDV for {customerName} ({selectedMake} {selectedModel})
           </p>
         </div>
 
         <button
-          onClick={onBackToDashboard}
+          type="button"
+          onClick={() => setIsCreatingQuote(false)}
           className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl border border-slate-200 flex items-center gap-2 transition-all self-start sm:self-auto"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Dashboard</span>
+          <span>Back to Customer Table</span>
         </button>
       </div>
 
@@ -198,8 +465,8 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
         {/* STEP 1: CUSTOMER DETAILS */}
         {step === 1 && (
           <div className="bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm max-w-3xl mx-auto animate-in slide-in-from-bottom-4">
-            <h2 className="text-xl font-extrabold text-slate-900">Customer Details</h2>
-            <p className="text-sm text-slate-500 mt-1 mb-8">Enter customer information to create a new quote.</p>
+            <h2 className="text-xl font-extrabold text-slate-900">Step 1: Customer Details</h2>
+            <p className="text-sm text-slate-500 mt-1 mb-8">Confirm customer information to calculate localized risk and RTO zone.</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
@@ -242,9 +509,11 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                   onChange={(e) => setSelectedCity(e.target.value)}
                   className="w-full p-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-sm font-medium outline-none bg-white transition-all"
                 >
-                  <option value="Mumbai">Mumbai (Zone A)</option>
-                  <option value="Delhi">Delhi (Zone A)</option>
-                  <option value="Bengaluru">Bengaluru (Zone B)</option>
+                  <option value="Mumbai">Mumbai (Zone A - Flood Risk)</option>
+                  <option value="Delhi">Delhi NCR (Zone A)</option>
+                  <option value="Bengaluru">Bengaluru (Zone A)</option>
+                  <option value="Pune">Pune (Zone B)</option>
+                  <option value="Chennai">Chennai (Zone A)</option>
                 </select>
               </div>
             </div>
@@ -252,24 +521,26 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
             <div className="mt-6 flex items-center gap-2.5">
               <input
                 type="checkbox"
-                id="existingCustomer"
+                id="existingCustomerCheck"
                 checked={isExistingCustomer}
                 onChange={(e) => setIsExistingCustomer(e.target.checked)}
                 className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
               />
-              <label htmlFor="existingCustomer" className="text-sm font-medium text-slate-700 cursor-pointer">
-                Existing customer (Auto-fill previous policy data)
+              <label htmlFor="existingCustomerCheck" className="text-sm font-medium text-slate-700 cursor-pointer">
+                Existing Customer (Pre-filled from CRM database)
               </label>
             </div>
 
             <div className="mt-10 flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
               <button
-                onClick={onBackToDashboard}
+                type="button"
+                onClick={() => setIsCreatingQuote(false)}
                 className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={() => setStep(2)}
                 className="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20 flex items-center gap-2"
               >
@@ -283,8 +554,8 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
         {step === 2 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-bottom-4">
             <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm">
-              <h2 className="text-xl font-extrabold text-slate-900">Vehicle Details</h2>
-              <p className="text-sm text-slate-500 mt-1 mb-8">Select the vehicle information to calculate IDV.</p>
+              <h2 className="text-xl font-extrabold text-slate-900">Step 2: Vehicle Details</h2>
+              <p className="text-sm text-slate-500 mt-1 mb-8">Select the vehicle make, model, and registration year to calculate Insured Declared Value (IDV).</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
@@ -297,6 +568,8 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     <option value="Hyundai">Hyundai</option>
                     <option value="Tata">Tata</option>
                     <option value="Maruti">Maruti</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Mahindra">Mahindra</option>
                   </select>
                 </div>
 
@@ -310,6 +583,8 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     <option value="Creta">Creta</option>
                     <option value="i20">i20</option>
                     <option value="Verna">Verna</option>
+                    <option value="Nexon">Nexon</option>
+                    <option value="Baleno">Baleno</option>
                   </select>
                 </div>
 
@@ -320,9 +595,10 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     onChange={(e) => setRegYear(e.target.value)}
                     className="w-full p-3 rounded-xl border border-slate-200 text-sm font-medium outline-none bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
                   >
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
+                    <option value="2025">2025 (New)</option>
+                    <option value="2024">2024 (1 Yr Old)</option>
+                    <option value="2023">2023 (2 Yrs Old)</option>
+                    <option value="2022">2022 (3 Yrs Old)</option>
                   </select>
                 </div>
 
@@ -335,7 +611,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                   >
                     <option value="Petrol">Petrol</option>
                     <option value="Diesel">Diesel</option>
-                    <option value="EV">EV</option>
+                    <option value="EV">EV (Electric)</option>
                   </select>
                 </div>
 
@@ -365,12 +641,14 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
 
               <div className="mt-10 flex items-center justify-between pt-6 border-t border-slate-100">
                 <button
+                  type="button"
                   onClick={() => setStep(1)}
                   className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors flex items-center gap-2"
                 >
                   <ChevronLeft className="w-4 h-4" /> Back
                 </button>
                 <button
+                  type="button"
                   onClick={() => setStep(3)}
                   className="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20 flex items-center gap-2"
                 >
@@ -382,7 +660,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
             {/* Vehicle Summary Card */}
             <div className="bg-slate-50 rounded-2xl border border-slate-200/80 p-6 shadow-sm flex flex-col justify-between">
               <div>
-                <h3 className="text-lg font-bold text-slate-900 mb-6">Vehicle Summary</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-6">IDV Calculation Summary</h3>
 
                 <div className="w-full h-36 bg-slate-200/70 rounded-xl flex flex-col items-center justify-center text-slate-400 mb-6 border border-slate-200">
                   <Car className="w-16 h-16 text-slate-400" />
@@ -426,8 +704,8 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
           <div className="bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm animate-in slide-in-from-bottom-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900">Recommended Add-ons</h2>
-                <p className="text-sm text-slate-500 mt-1">Based on vehicle profile ({selectedMake} {selectedModel}), location ({selectedCity}), and risk factors.</p>
+                <h2 className="text-xl font-extrabold text-slate-900">Step 3: Recommended Add-ons</h2>
+                <p className="text-sm text-slate-500 mt-1">Based on vehicle profile ({selectedMake} {selectedModel}) and city risk profile ({selectedCity}).</p>
               </div>
               <div className="bg-purple-50 text-purple-700 px-3 py-1.5 rounded-xl border border-purple-100 text-xs font-bold flex items-center gap-1.5 self-start">
                 <Sparkles className="w-4 h-4 text-purple-600" />
@@ -543,121 +821,18 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                 </div>
               </div>
 
-              {/* Consumables Cover */}
-              <div
-                onClick={() => toggleAddon("consumables")}
-                className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between relative ${
-                  selectedAddonIds.includes("consumables")
-                    ? "border-blue-600 bg-blue-50/20 shadow-md"
-                    : "border-slate-200 bg-white hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-base">Consumables Cover</h4>
-                      <p className="font-extrabold text-blue-700 text-lg">₹900</p>
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedAddonIds.includes("consumables")}
-                    onChange={() => {}}
-                    className="w-5 h-5 text-blue-600 rounded-md border-slate-300"
-                  />
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  Covers expense of nuts, bolts, engine oil, brake fluid, coolant during repair claims.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-lg">Optional</span>
-                  <span className="text-xs font-semibold text-slate-500">Adds ~₹900</span>
-                </div>
-              </div>
-
-              {/* Return to Invoice */}
-              <div
-                onClick={() => toggleAddon("rti")}
-                className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between relative ${
-                  selectedAddonIds.includes("rti")
-                    ? "border-blue-600 bg-blue-50/20 shadow-md"
-                    : "border-slate-200 bg-white hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-base">Return to Invoice</h4>
-                      <p className="font-extrabold text-blue-700 text-lg">₹1,500</p>
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedAddonIds.includes("rti")}
-                    onChange={() => {}}
-                    className="w-5 h-5 text-blue-600 rounded-md border-slate-300"
-                  />
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  In case of total loss or theft, pays out full ex-showroom purchase price + taxes.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-lg">Optional</span>
-                  <span className="text-xs font-semibold text-slate-500">Adds ~₹1,500</span>
-                </div>
-              </div>
-
-              {/* Key Replacement */}
-              <div
-                onClick={() => toggleAddon("key_replace")}
-                className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between relative ${
-                  selectedAddonIds.includes("key_replace")
-                    ? "border-blue-600 bg-blue-50/20 shadow-md"
-                    : "border-slate-200 bg-white hover:border-slate-300"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
-                      <AlertCircle className="w-5 h-5 text-slate-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-base">Key Replacement</h4>
-                      <p className="font-extrabold text-blue-700 text-lg">₹500</p>
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={selectedAddonIds.includes("key_replace")}
-                    onChange={() => {}}
-                    className="w-5 h-5 text-blue-600 rounded-md border-slate-300"
-                  />
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  Covers replacement cost of smart remote keys if lost or stolen.
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="bg-slate-100 text-slate-700 text-[11px] font-bold px-2.5 py-1 rounded-lg">Optional</span>
-                  <span className="text-xs font-semibold text-slate-500">Adds ~₹500</span>
-                </div>
-              </div>
-
             </div>
 
             <div className="mt-10 flex items-center justify-between pt-6 border-t border-slate-100">
               <button
+                type="button"
                 onClick={() => setStep(2)}
                 className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors flex items-center gap-2"
               >
                 <ChevronLeft className="w-4 h-4" /> Back
               </button>
               <button
+                type="button"
                 onClick={() => setStep(4)}
                 className="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20 flex items-center gap-2"
               >
@@ -670,7 +845,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
         {/* STEP 4: COMPARE PLANS */}
         {step === 4 && (
           <div className="bg-white rounded-2xl border border-slate-200/80 p-8 shadow-sm animate-in slide-in-from-bottom-4">
-            <h2 className="text-xl font-extrabold text-slate-900">Compare Insurance Plans</h2>
+            <h2 className="text-xl font-extrabold text-slate-900">Step 4: Compare Insurance Plans</h2>
             <p className="text-sm text-slate-500 mt-1 mb-8">Compare coverage options and choose the plan for your customer.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -702,13 +877,11 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     <li className="flex items-center gap-2 text-slate-400">
                       <span className="w-4 text-center">✕</span> Own Damage Cover (Not included)
                     </li>
-                    <li className="flex items-center gap-2 text-slate-400">
-                      <span className="w-4 text-center">✕</span> Zero Depreciation (Not included)
-                    </li>
                   </ul>
                 </div>
 
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedPlanTier("Basic");
@@ -758,13 +931,11 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     <li className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-emerald-600 shrink-0" /> Zero Depreciation included
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" /> 24x7 Roadside Assistance
-                    </li>
                   </ul>
                 </div>
 
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedPlanTier("Standard");
@@ -803,16 +974,11 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     <li className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-emerald-600 shrink-0" /> Engine & Gearbox Protection
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" /> Return to Invoice cover
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-emerald-600 shrink-0" /> Key Replacement cover
-                    </li>
                   </ul>
                 </div>
 
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedPlanTier("Premium");
@@ -832,12 +998,14 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
 
             <div className="mt-10 flex items-center justify-between pt-6 border-t border-slate-100">
               <button
+                type="button"
                 onClick={() => setStep(3)}
                 className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors flex items-center gap-2"
               >
                 <ChevronLeft className="w-4 h-4" /> Back
               </button>
               <button
+                type="button"
                 onClick={() => setStep(5)}
                 className="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20 flex items-center gap-2"
               >
@@ -937,7 +1105,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
                     </div>
                     <div className="flex justify-between text-emerald-600">
                       <span>No Claim Bonus (NCB 25%)</span>
-                      <span className="font-bold">- ₹Math.round(basePremium * 0.25).toLocaleString("en-IN")</span>
+                      <span className="font-bold">- ₹{Math.round(basePremium * 0.25).toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between text-slate-600 border-t border-slate-100 pt-3">
                       <span>Net Premium</span>
@@ -964,6 +1132,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
             {/* Quick Actions Footer */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-4">
               <button
+                type="button"
                 onClick={() => alert("Downloading Quote PDF...")}
                 className="py-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm shadow-sm transition-colors flex items-center justify-center gap-2"
               >
@@ -971,6 +1140,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
               </button>
               
               <button
+                type="button"
                 onClick={() => alert(`Sending quote to WhatsApp (${customerPhone})...`)}
                 className="py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-colors flex items-center justify-center gap-2"
               >
@@ -978,6 +1148,7 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
               </button>
               
               <button
+                type="button"
                 onClick={() => alert(`Sending quote to Email (${customerEmail})...`)}
                 className="py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition-colors flex items-center justify-center gap-2"
               >
@@ -985,10 +1156,11 @@ export default function NewQuotePage({ onSaveQuote, onBackToDashboard }) {
               </button>
               
               <button
+                type="button"
                 onClick={handleFinalSubmit}
                 className="py-3.5 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-sm shadow-md transition-colors flex items-center justify-center gap-2"
               >
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Save & Back to Dashboard
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Save & Return to Table
               </button>
             </div>
 
