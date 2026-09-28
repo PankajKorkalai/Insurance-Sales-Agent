@@ -1,0 +1,11 @@
+# Secrets
+.env
+
+# Vector store
+.chroma_db/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/

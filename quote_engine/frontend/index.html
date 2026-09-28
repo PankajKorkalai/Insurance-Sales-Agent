@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motor Insurance Quote Engine</title>
+<style>
+  :root {
+    --bg: #f4f6fb; --card: #fff; --text: #1d2433; --muted: #6b7489; --line: #e3e7ef;
+    --blue: #2f5bea; --green: #11845b; --red: #c0392b; --basic: #64748b; --standard: #2f5bea; --premium: #8b3fd9;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  header { background: #16213e; color: #fff; padding: 18px 32px; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: #b8c1d9; font-size: 13px; }
+  main { max-width: 1200px; margin: 24px auto; padding: 0 20px; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  form.grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 14px; align-items: end; }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .03em; }
+  input, select { width: 100%; padding: 9px 10px; border: 1px solid #cdd3df; border-radius: 6px; font-size: 14px; background: #fff; }
+  input:focus, select:focus { outline: 2px solid #c7d4fb; border-color: var(--blue); }
+  button { padding: 10px 18px; border: 0; border-radius: 6px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: .6; cursor: wait; }
+  button.secondary { background: #eef1f7; color: var(--text); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .error { background: #fdecea; color: var(--red); border: 1px solid #f5c6c0; padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; white-space: pre-wrap; }
+  .success { background: #e7f6ef; color: var(--green); border: 1px solid #b9e4cf; padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .chip { background: #eef1f7; border-radius: 999px; padding: 5px 12px; font-size: 13px; }
+  .chip b { font-weight: 600; }
+  .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .plan { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .plan-head { padding: 16px 18px; color: #fff; }
+  .plan-head h2 { margin: 0; font-size: 16px; text-transform: uppercase; letter-spacing: .06em; }
+  .plan-head .desc { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .plan-head .total { font-size: 28px; font-weight: 700; margin-top: 10px; }
+  .plan-head .total small { font-size: 12px; font-weight: 400; opacity: .85; }
+  .basic .plan-head { background: var(--basic); }
+  .standard .plan-head { background: var(--standard); }
+  .premium .plan-head { background: var(--premium); }
+  .plan-body { padding: 14px 18px; flex: 1; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td { padding: 7px 0; border-bottom: 1px dashed var(--line); vertical-align: top; }
+  td.amt { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 10px; }
+  td .sub { display: block; font-size: 11px; color: var(--muted); }
+  tr.discount td.amt { color: var(--green); }
+  tr.total td { font-weight: 700; border-bottom: 0; border-top: 2px solid var(--text); padding-top: 10px; }
+  tr.addon td { padding-left: 12px; font-size: 13px; }
+  details { margin-top: 12px; font-size: 12px; }
+  summary { cursor: pointer; color: var(--blue); font-weight: 600; }
+  pre.trace { background: #0f172a; color: #dbe4ff; padding: 10px; border-radius: 6px; white-space: pre-wrap; font-size: 11.5px; line-height: 1.5; margin: 8px 0 0; }
+  .plan-foot { padding: 12px 18px 18px; }
+  .plan-foot button { width: 100%; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  dialog { border: 0; border-radius: 12px; padding: 0; width: 420px; max-width: 92vw; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+  dialog::backdrop { background: rgba(15, 23, 42, .45); }
+  dialog form { padding: 22px; }
+  dialog h3 { margin: 0 0 4px; }
+  dialog .row { margin-top: 12px; }
+  dialog .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+  #quotes table td, #quotes table th { padding: 8px 6px; font-size: 13px; text-align: left; border-bottom: 1px solid var(--line); }
+  #quotes table th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
+  .status { padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .status.draft { background: #fff4d6; color: #8a6100; }
+  .status.sent { background: #e0e9ff; color: #2344b0; }
+  .status.converted { background: #dcf5e8; color: var(--green); }
+  #quotes button { padding: 4px 10px; font-size: 12px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge.ai { background: #efe4fb; color: var(--premium); }
+  .badge.rules { background: #fff4d6; color: #8a6100; }
+  .rec { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 12px 0; border-bottom: 1px dashed var(--line); }
+  .rec .name { font-weight: 600; text-transform: capitalize; }
+  .rec .price { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .rec .why { grid-column: 1 / -1; font-size: 13px; color: #3c4557; }
+  .rec.no .name { color: var(--muted); }
+  .adv-total { display: flex; justify-content: space-between; font-weight: 700; padding: 12px 0; border-top: 2px solid var(--text); margin-top: 4px; }
+  .notes { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  @media (max-width: 900px) {
+    form.grid { grid-template-columns: 1fr 1fr; }
+    .plans { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Motor Insurance Quote Engine</h1>
+  <p>Rule-based premium calculator &middot; every figure traceable to an exact formula</p>
+</header>
+
+<main>
+  <section class="panel">
+    <form id="quote-form" class="grid">
+      <div>
+        <label for="vehicle">Vehicle</label>
+        <select id="vehicle" required><option value="">Loading vehicles...</option></select>
+      </div>
+      <div>
+        <label for="city">City</label>
+        <input id="city" list="city-list" value="Mumbai" required>
+        <datalist id="city-list"></datalist>
+      </div>
+      <div>
+        <label for="cfy">Claim-free years</label>
+        <input id="cfy" type="number" min="0" max="50" value="0" required>
+      </div>
+      <div>
+        <label for="regdate">Registration date</label>
+        <input id="regdate" type="date">
+      </div>
+      <div>
+        <button id="calc-btn" type="submit">Calculate</button>
+      </div>
+    </form>
+    <div class="hint" id="form-hint">Leave registration date empty to assume 1 January of the model year.</div>
+  </section>
+
+  <div id="message"></div>
+  <div id="meta" class="meta"></div>
+  <div id="plans" class="plans">
+    <div class="empty" style="grid-column: 1 / -1">Pick a vehicle and click <b>Calculate</b> to compare plans.</div>
+  </div>
+
+  <section class="panel" id="advisor" style="margin-top: 24px; display: none">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap: 12px">
+      <div>
+        <h3 style="margin:0">AI add-on advisor</h3>
+        <div class="hint">Prices come from the rule engine. The AI only picks from the available add-ons and explains why; its output is checked against the exact prices.</div>
+      </div>
+      <button type="button" id="advisor-btn">Ask AI advisor</button>
+    </div>
+    <div id="advisor-body"></div>
+  </section>
+
+  <section class="panel" id="quotes" style="margin-top: 24px">
+    <div style="display:flex; justify-content:space-between; align-items:center">
+      <h3 style="margin:0">Saved quotes</h3>
+      <button class="secondary" type="button" id="refresh-quotes">Refresh</button>
+    </div>
+    <div id="quotes-body" class="hint">No quotes yet.</div>
+  </section>
+</main>
+
+<dialog id="save-dialog">
+  <form id="save-form" method="dialog">
+    <h3>Save <span id="save-tier"></span> quote</h3>
+    <div class="hint">An existing customer with the same phone number is reused.</div>
+    <div class="row"><label for="c-name">Customer name</label><input id="c-name" required></div>
+    <div class="row"><label for="c-phone">Phone</label><input id="c-phone" placeholder="9876543210" required></div>
+    <div class="row"><label for="c-email">Email (optional)</label><input id="c-email" type="email"></div>
+    <div class="row"><label for="c-city">Customer city</label><input id="c-city" required></div>
+    <div class="actions">
+      <button class="secondary" type="button" id="save-cancel">Cancel</button>
+      <button type="submit" id="save-submit">Save quote</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 });
+const money = (v) => inr.format(Number(v || 0));
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const PLAN_DESC = {
+  basic: "Third-party liability only",
+  standard: "Own damage + third party, with NCB",
+  premium: "Standard + recommended add-ons",
+};
+let lastRequest = null;
+let lastAdvice = null;
+let saveTier = null;
+let saveAddonIds = null;
+
+async function api(path, options = {}) {
+  const res = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    let detail = body.detail ?? res.statusText;
+    if (Array.isArray(detail)) detail = detail.map((d) => `${d.loc?.slice(1).join(".") || "request"}: ${d.msg}`).join("\n");
+    throw new Error(detail);
+  }
+  return body;
+}
+
+function showMessage(text, kind = "error") {
+  $("message").innerHTML = text ? `<div class="${kind}"></div>` : "";
+  if (text) $("message").firstChild.textContent = text;
+}
+
+async function loadVehicles() {
+  const vehicles = await api("/vehicles");
+  const byMake = {};
+  vehicles.forEach((v) => (byMake[v.make] ??= []).push(v));
+  $("vehicle").innerHTML = '<option value="">Select a vehicle</option>' + Object.entries(byMake).map(([make, list]) =>
+    `<optgroup label="${esc(make)}">` + list.map((v) =>
+      `<option value="${v.vehicle_id}">${esc(v.model)} ${v.year} &middot; ${v.fuel_type}${v.engine_cc ? ` &middot; ${v.engine_cc}cc` : ""} &middot; ${money(v.ex_showroom_price)}</option>`
+    ).join("") + "</optgroup>"
+  ).join("");
+}
+
+async function loadCities() {
+  const cities = await api("/cities");
+  $("city-list").innerHTML = cities.map((c) =>
+    `<option value="${c.city}">${c.city_zone.replaceAll("_", " ")}${c.flood_prone ? " · flood-prone" : ""}</option>`
+  ).join("");
+}
+
+function row(label, amount, sub = "", cls = "") {
+  return `<tr class="${cls}"><td>${label}${sub ? `<span class="sub">${sub}</span>` : ""}</td><td class="amt">${amount}</td></tr>`;
+}
+
+function renderPlan(tier, p) {
+  const od = tier !== "basic";
+  let rows = "";
+  if (od) {
+    rows += row("IDV", money(p.idv), `${money(p.ex_showroom_price)} less ${p.depreciation_pct}% depreciation`);
+    rows += row("Own damage premium", money(p.od_premium), `${p.od_rate_pct}% of IDV`);
+    rows += row("No claim bonus", "&minus; " + money(p.ncb_discount_amount), `${p.ncb_discount_pct}% for ${p.claim_free_years} claim-free yr`, "discount");
+    rows += row("Net own damage", money(p.net_od_premium));
+  }
+  rows += row("Third party premium", money(p.tp_premium), `flat for ${p.cc_band.replaceAll("_", " ")} cc`);
+  if (p.addon_breakdown.length) {
+    rows += row(`<b>Add-ons</b>`, money(p.addons_total));
+    p.addon_breakdown.forEach((a) => {
+      const sub = a.recommendation_reason ? `${esc(a.formula)} &middot; ${esc(a.recommendation_reason)}` : esc(a.formula);
+      rows += row(esc(a.addon_name.replaceAll("_", " ")), money(a.price), sub, "addon");
+    });
+  }
+  rows += row("Total premium", money(p.total_premium), "", "total");
+
+  return `
+    <div class="plan ${tier}">
+      <div class="plan-head">
+        <h2>${tier}</h2>
+        <div class="desc">${PLAN_DESC[tier]}</div>
+        <div class="total">${money(p.total_premium)} <small>/ year, excl. GST</small></div>
+      </div>
+      <div class="plan-body">
+        <table>${rows}</table>
+        <details><summary>Show formula trace</summary><pre class="trace">${esc(p.formula_trace.join("\n"))}</pre></details>
+      </div>
+      <div class="plan-foot"><button type="button" data-tier="${tier}" class="save-btn">Save as quote</button></div>
+    </div>`;
+}
+
+async function calculate(event) {
+  event.preventDefault();
+  showMessage("");
+  const btn = $("calc-btn");
+  btn.disabled = true; btn.textContent = "Calculating...";
+  lastRequest = {
+    vehicle_id: Number($("vehicle").value),
+    city: $("city").value.trim(),
+    claim_free_years: Number($("cfy").value),
+    registration_date: $("regdate").value || null,
+  };
+  try {
+    const plans = await api("/quotes/calculate", { method: "POST", body: JSON.stringify(lastRequest) });
+    const p = plans.standard;
+    $("meta").innerHTML = [
+      ["Vehicle", p.vehicle],
+      ["Age", `${p.vehicle_age_months} months`],
+      ["Age basis", p.age_basis],
+      ["Zone", p.city_zone.replaceAll("_", " ")],
+      ["cc band", p.cc_band.replaceAll("_", " ")],
+    ].map(([k, v]) => `<span class="chip"><b>${k}:</b> ${esc(v)}</span>`).join("");
+    $("plans").innerHTML = ["basic", "standard", "premium"].map((t) => renderPlan(t, plans[t])).join("");
+    $("advisor").style.display = "";
+    $("advisor-body").innerHTML = "";
+  } catch (err) {
+    $("meta").innerHTML = "";
+    $("plans").innerHTML = "";
+    $("advisor").style.display = "none";
+    showMessage(err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Calculate";
+  }
+}
+
+async function askAdvisor() {
+  const btn = $("advisor-btn");
+  btn.disabled = true; btn.textContent = "Thinking...";
+  $("advisor-body").innerHTML = '<div class="hint" style="margin-top:12px">Asking the advisor...</div>';
+  try {
+    const r = await api("/advisor/addons", {
+      method: "POST",
+      body: JSON.stringify({ vehicle_id: lastRequest.vehicle_id, city: lastRequest.city, registration_date: lastRequest.registration_date }),
+    });
+    lastAdvice = r;
+    const badge = r.source === "ai"
+      ? `<span class="badge ai">AI (${esc(r.model)}) &middot; validated</span>`
+      : `<span class="badge rules">Rule-based fallback</span>`;
+    const recs = r.recommendations.map((a) => `
+      <div class="rec"><span class="name">${esc(a.addon_name.replaceAll("_", " "))}</span><span class="price">${money(a.price)}</span>
+      <span class="why">${esc(a.reasoning)}</span></div>`).join("") || '<div class="hint">No add-ons recommended.</div>';
+    const noRecs = r.not_recommended.map((a) => `
+      <div class="rec no"><span class="name">${esc(a.addon_name.replaceAll("_", " "))}</span><span></span>
+      <span class="why">${esc(a.reasoning)}</span></div>`).join("");
+    const unavailable = r.unavailable_addons.map((a) => `<li>${esc(a.reason)}</li>`).join("");
+    $("advisor-body").innerHTML = `
+      <div style="margin: 14px 0 4px">${badge}</div>
+      ${r.summary ? `<p style="margin:8px 0">${esc(r.summary)}</p>` : ""}
+      <h4 style="margin:14px 0 0">Recommended</h4>${recs}
+      <div class="adv-total"><span>Recommended add-ons total</span><span>${money(r.recommended_total)}</span></div>
+      ${noRecs ? `<h4 style="margin:14px 0 0">Not recommended</h4>${noRecs}` : ""}
+      ${unavailable ? `<h4 style="margin:14px 0 4px">Not available for this vehicle</h4><ul class="hint" style="margin:0">${unavailable}</ul>` : ""}
+      ${r.validation_notes.length ? `<div class="notes"><b>Validation:</b> ${r.validation_notes.map(esc).join(" | ")}</div>` : ""}
+      ${r.recommendations.length ? '<button type="button" id="save-advised" style="margin-top:14px">Save Premium quote with these add-ons</button>' : ""}`;
+  } catch (err) {
+    $("advisor-body").innerHTML = "";
+    showMessage(err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = "Ask AI advisor";
+  }
+}
+
+function openSave(tier, addonIds = null) {
+  saveTier = tier;
+  saveAddonIds = addonIds;
+  $("save-tier").textContent = addonIds ? `${tier} (advisor's add-ons)` : tier;
+  if (!$("c-city").value) $("c-city").value = lastRequest.city;
+  $("save-dialog").showModal();
+}
+
+async function saveQuote(event) {
+  event.preventDefault();
+  const btn = $("save-submit");
+  btn.disabled = true;
+  try {
+    const email = $("c-email").value.trim();
+    const quote = await api("/quotes", {
+      method: "POST",
+      body: JSON.stringify({
+        ...lastRequest,
+        plan_tier: saveTier,
+        ...(saveAddonIds ? { selected_addon_ids: saveAddonIds } : {}),
+        customer: { name: $("c-name").value.trim(), phone: $("c-phone").value.trim(), email: email || null, city: $("c-city").value.trim() },
+      }),
+    });
+    $("save-dialog").close();
+    showMessage(`Quote #${quote.quote_id} saved as draft for customer #${quote.customer_id}: ${quote.plan_tier} plan, ${money(quote.total_premium)}.`, "success");
+    loadQuotes();
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function loadQuotes() {
+  try {
+    const quotes = await api("/quotes?limit=20");
+    if (!quotes.length) { $("quotes-body").innerHTML = "No quotes yet."; return; }
+    const next = { draft: ["sent", "converted"], sent: ["converted"], converted: [] };
+    $("quotes-body").innerHTML = `<table>
+      <tr><th>#</th><th>Created</th><th>Vehicle</th><th>City</th><th>Plan</th><th>Total</th><th>Status</th><th></th></tr>
+      ${quotes.map((q) => `<tr>
+        <td>${q.quote_id}</td>
+        <td>${new Date(q.created_at).toLocaleString("en-IN")}</td>
+        <td>${esc(q.breakdown.vehicle)}</td>
+        <td>${esc(q.breakdown.city)}</td>
+        <td>${q.plan_tier}</td>
+        <td>${money(q.total_premium)}</td>
+        <td><span class="status ${q.status}">${q.status}</span></td>
+        <td>${next[q.status].map((s) => `<button class="secondary status-btn" data-id="${q.quote_id}" data-status="${s}">Mark ${s}</button>`).join(" ")}</td>
+      </tr>`).join("")}
+    </table>`;
+  } catch (err) {
+    $("quotes-body").textContent = `Could not load quotes: ${err.message}`;
+  }
+}
+
+async function updateStatus(id, status) {
+  try {
+    await api(`/quotes/${id}/status`, { method: "PATCH", body: JSON.stringify({ status }) });
+    loadQuotes();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+$("quote-form").addEventListener("submit", calculate);
+$("save-form").addEventListener("submit", saveQuote);
+$("save-cancel").addEventListener("click", () => $("save-dialog").close());
+$("refresh-quotes").addEventListener("click", loadQuotes);
+$("advisor-btn").addEventListener("click", askAdvisor);
+document.addEventListener("click", (e) => {
+  if (e.target.id === "save-advised") openSave("premium", lastAdvice.recommendations.map((a) => a.addon_id));
+  if (e.target.classList.contains("save-btn")) openSave(e.target.dataset.tier);
+  if (e.target.classList.contains("status-btn")) updateStatus(e.target.dataset.id, e.target.dataset.status);
+});
+
+Promise.all([loadVehicles(), loadCities(), loadQuotes()]).catch((err) =>
+  showMessage(`Could not reach the API: ${err.message}. Is the server running?`)
+);
+</script>
+</body>
+</html>

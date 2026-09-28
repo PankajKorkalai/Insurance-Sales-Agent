@@ -1,0 +1,281 @@
+{
+  "HDFC ERGO": [
+    {
+      "section_number": "1.1",
+      "section_title": "Insured's Declared Value (IDV)",
+      "parent_category": "definitions",
+      "related_addon": null,
+      "content": "1.1 Insured's Declared Value (IDV)\nThe IDV of the vehicle is fixed on the basis of the manufacturer's listed selling price of the brand and model, adjusted for depreciation as per the following schedule: not exceeding 6 months - 5%; exceeding 6 months but not exceeding 1 year - 15%; exceeding 1 year but not exceeding 2 years - 20%; exceeding 2 years but not exceeding 3 years - 30%; exceeding 3 years but not exceeding 4 years - 40%; exceeding 4 years but not exceeding 5 years - 50%. The IDV of vehicles beyond 5 years of age and of obsolete models is determined by mutual agreement between the Company and the insured."
+    },
+    {
+      "section_number": "2.1",
+      "section_title": "Loss or Damage to the Vehicle Insured",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "2.1 Loss or Damage to the Vehicle Insured\nThe Company will indemnify the insured against loss or damage to the vehicle and its accessories caused by: fire, explosion, self-ignition or lightning; burglary, housebreaking or theft; riot and strike; earthquake (fire and shock damage); flood, typhoon, hurricane, storm, tempest, inundation, cyclone, hailstorm, frost; accidental external means; malicious act; terrorist activity; whilst in transit by road, rail, inland waterway, lift, elevator or air; landslide or rockslide. Depreciation on parts replaced is deducted as per Section 2.2."
+    },
+    {
+      "section_number": "2.2",
+      "section_title": "Depreciation on Parts Replaced",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "2.2 Depreciation on Parts Replaced\nIn the case of partial loss, depreciation is deducted from the cost of parts replaced: rubber, nylon and plastic parts, tyres and tubes, batteries and airbags - 50%; fibreglass components - 30%; all parts made of glass - nil. For metal parts, depreciation depends on the age of the vehicle: not exceeding 6 months - nil; 6 months to 1 year - 5%; 1 to 2 years - 10%; 2 to 3 years - 15%; 3 to 4 years - 25%; 4 to 5 years - 35%; 5 to 10 years - 40%; exceeding 10 years - 50%."
+    },
+    {
+      "section_number": "3.1",
+      "section_title": "Liability to Third Parties",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "3.1 Liability to Third Parties\nThe Company will indemnify the insured against legal liability arising out of the use of the vehicle for death of or bodily injury to any person, to the extent required by the Motor Vehicles Act, 1988, without limit. Liability for damage to third-party property is covered up to Rs 7,50,000 per accident for a private car."
+    },
+    {
+      "section_number": "4.1",
+      "section_title": "General Exclusions",
+      "parent_category": "exclusions",
+      "related_addon": null,
+      "content": "4.1 General Exclusions\nThe Company shall not be liable for: any accidental loss or damage occurring outside the geographical area; any claim arising out of contractual liability; loss or damage while the vehicle is driven by a person without a valid driving licence; loss or damage while the driver is under the influence of alcohol or drugs; consequential loss, depreciation, wear and tear, mechanical or electrical breakdown, failures or breakages; loss or damage caused by war, invasion, nuclear weapons or radioactive contamination."
+    },
+    {
+      "section_number": "5.1",
+      "section_title": "No Claim Bonus",
+      "parent_category": "ncb",
+      "related_addon": null,
+      "content": "5.1 No Claim Bonus\nThe insured is entitled to a No Claim Bonus (NCB) on the own damage premium if no claim is made during the preceding policy year(s): 20% after one claim-free year, 25% after two, 35% after three, 45% after four and 50% after five consecutive claim-free years. NCB is forfeited if a claim is made. NCB is retained if the policy is renewed within 90 days of expiry and may be transferred to a new vehicle of the same class on sale of the insured vehicle."
+    },
+    {
+      "section_number": "6.1",
+      "section_title": "Claims Procedure",
+      "parent_category": "claims",
+      "related_addon": null,
+      "content": "6.1 Claims Procedure\nThe insured must notify the Company within 48 hours of any accident or loss through the toll-free helpline, mobile app or website. In case of theft, an FIR must be lodged and the Company informed within 24 hours. Cashless repair is available at network garages; for non-network garages the insured pays and is reimbursed. Documents required: claim form, copy of RC, driving licence, policy copy, FIR (where applicable) and repair estimate."
+    },
+    {
+      "section_number": "7.1",
+      "section_title": "Zero Depreciation Cover",
+      "parent_category": "addons",
+      "related_addon": "zero_dep",
+      "content": "7.1 Zero Depreciation Cover\nIn consideration of additional premium, depreciation on parts replaced under an admissible own damage claim will not be deducted. This add-on is available for vehicles up to 5 years old and is limited to 2 claims per policy year. Tyres and tubes are covered only when damaged in the same accident as other parts. The compulsory deductible under the policy continues to apply."
+    },
+    {
+      "section_number": "7.2",
+      "section_title": "Engine and Gearbox Protection",
+      "parent_category": "addons",
+      "related_addon": "engine_protection",
+      "content": "7.2 Engine and Gearbox Protection\nThe Company will pay for repair or replacement of engine and gearbox parts damaged due to water ingression, leakage of lubricating oil or hydrostatic lock, which are otherwise excluded as consequential loss. Available for vehicles up to 5 years old. Not covered: manufacturing defects, damage covered under the manufacturer's warranty, and damage from continued operation of the vehicle after the incident."
+    },
+    {
+      "section_number": "7.3",
+      "section_title": "Emergency Roadside Assistance",
+      "parent_category": "addons",
+      "related_addon": "roadside_assistance",
+      "content": "7.3 Emergency Roadside Assistance\n24x7 assistance is provided for breakdown or accident: towing to the nearest authorised workshop up to 50 km, flat tyre change, battery jump-start, fuel delivery up to 5 litres (fuel cost borne by the insured), key lockout assistance and minor on-site repairs. A maximum of 4 assistance services are available per policy year."
+    },
+    {
+      "section_number": "7.4",
+      "section_title": "Cost of Consumables",
+      "parent_category": "addons",
+      "related_addon": "consumables",
+      "content": "7.4 Cost of Consumables\nThe Company will reimburse the cost of consumables used during repair of the vehicle under an admissible own damage claim, including engine oil, coolant, brake oil, AC gas, nuts, bolts, screws, washers, grease and bearings. Fuel is not covered. Payable only if the underlying own damage claim is admissible."
+    },
+    {
+      "section_number": "7.5",
+      "section_title": "Return to Invoice",
+      "parent_category": "addons",
+      "related_addon": "return_to_invoice",
+      "content": "7.5 Return to Invoice\nIn the event of total loss, constructive total loss or theft of the vehicle, the Company will pay the difference between the IDV and the invoice value of the vehicle, together with first-time registration charges and road tax. Available for vehicles up to 3 years old."
+    },
+    {
+      "section_number": "7.6",
+      "section_title": "Key Replacement",
+      "parent_category": "addons",
+      "related_addon": "key_replacement",
+      "content": "7.6 Key Replacement\nThe Company will pay the cost of replacing lost or stolen vehicle keys, including the lock set if required, up to Rs 25,000 per policy year. A maximum of 2 claims are allowed per policy year. Theft of keys must be supported by a police report."
+    }
+  ],
+  "ICICI Lombard": [
+    {
+      "section_number": "1.2",
+      "section_title": "Insured's Declared Value",
+      "parent_category": "definitions",
+      "related_addon": null,
+      "content": "Section 1.2 Insured's Declared Value\nIDV is the manufacturer's listed selling price of the vehicle, including accessories fitted by the manufacturer, less depreciation based on the age of the vehicle: up to 6 months - 5%; 6 months to 1 year - 15%; 1 to 2 years - 20%; 2 to 3 years - 30%; 3 to 4 years - 40%; 4 to 5 years - 50%. For vehicles older than 5 years, IDV is agreed between the Company and the insured based on the vehicle's condition and market value."
+    },
+    {
+      "section_number": "2.1",
+      "section_title": "Own Damage Cover",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "Section 2.1 Own Damage Cover\nThe Company shall indemnify the insured for loss of or damage to the insured vehicle caused by fire, explosion, self-ignition, lightning, burglary, theft, riot, strike, malicious act, terrorism, earthquake, flood, cyclone, storm, inundation, landslide, rockslide, accidental external means, and whilst in transit by road, rail, inland waterway, lift, elevator or air. Standard depreciation on parts replaced applies unless the Zero Depreciation add-on is opted."
+    },
+    {
+      "section_number": "2.3",
+      "section_title": "Depreciation Schedule for Parts",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "Section 2.3 Depreciation Schedule for Parts\nDepreciation on parts replaced: rubber, nylon, plastic, tyres, tubes and batteries - 50%; fibreglass - 30%; glass - nil. Metal parts by vehicle age: up to 6 months - nil; 6 months to 1 year - 5%; 1 to 2 years - 10%; 2 to 3 years - 15%; 3 to 4 years - 25%; 4 to 5 years - 35%; 5 to 10 years - 40%; above 10 years - 50%."
+    },
+    {
+      "section_number": "3.1",
+      "section_title": "Third Party Liability",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "Section 3.1 Third Party Liability\nThe Company shall cover the insured's legal liability for death or bodily injury to third parties without limit as required under the Motor Vehicles Act, 1988, and for damage to third-party property up to Rs 7,50,000 per accident."
+    },
+    {
+      "section_number": "4.1",
+      "section_title": "Exclusions",
+      "parent_category": "exclusions",
+      "related_addon": null,
+      "content": "Section 4.1 Exclusions\nNo claim is payable for: damage outside the geographical area; use of the vehicle for hire or reward, racing, pace-making or speed testing unless specifically covered; driving without a valid licence or under the influence of intoxicating liquor or drugs; normal wear and tear, depreciation, mechanical or electrical breakdown; consequential loss including engine damage from water ingress unless the Engine Protect add-on is opted; war, nuclear risks and radioactive contamination."
+    },
+    {
+      "section_number": "5.1",
+      "section_title": "No Claim Bonus",
+      "parent_category": "ncb",
+      "related_addon": null,
+      "content": "Section 5.1 No Claim Bonus\nNCB is allowed on the own damage premium for each claim-free year: 20%, 25%, 35%, 45% and 50% for one to five or more consecutive claim-free years respectively. A claim in the policy year reduces the NCB to nil at renewal. NCB lapses if the policy is not renewed within 90 days of expiry. NCB belongs to the insured, not the vehicle, and can be transferred to a replacement vehicle of the same class."
+    },
+    {
+      "section_number": "6.1",
+      "section_title": "Claim Intimation and Settlement",
+      "parent_category": "claims",
+      "related_addon": null,
+      "content": "Section 6.1 Claim Intimation and Settlement\nClaims must be intimated within 24 hours of the incident through the IL TakeCare app, website or 24x7 call centre. Theft must be reported to the police immediately and an FIR copy submitted. Cashless settlement is available at network garages after survey; reimbursement claims are settled within 7 working days of receipt of all documents. Required documents: claim form, RC copy, driving licence, policy copy, FIR where applicable, and repair invoices."
+    },
+    {
+      "section_number": "7.1",
+      "section_title": "Zero Depreciation Add-on",
+      "parent_category": "addons",
+      "related_addon": "zero_dep",
+      "content": "Section 7.1 Zero Depreciation Add-on\nDepreciation on parts replaced will not be deducted from an admissible own damage claim. Available for vehicles up to 7 years old. Unlimited claims are allowed per policy year; however, from the third claim onwards an additional deductible of Rs 1,000 per claim applies. Tyres and tubes are excluded unless damaged in an accident along with other parts."
+    },
+    {
+      "section_number": "7.2",
+      "section_title": "Engine Protect",
+      "parent_category": "addons",
+      "related_addon": "engine_protection",
+      "content": "Section 7.2 Engine Protect\nCovers damage to the engine, gearbox and differential caused by water ingression, hydrostatic lock or leakage of lubricating oil following an accident. Available for vehicles up to 7 years old. A deductible of 5% of the admissible claim amount applies. Not covered: wear and tear, manufacturing defects, and losses covered under the manufacturer's warranty."
+    },
+    {
+      "section_number": "7.3",
+      "section_title": "Roadside Assistance",
+      "parent_category": "addons",
+      "related_addon": "roadside_assistance",
+      "content": "Section 7.3 Roadside Assistance\nAvailable 24x7 across India: towing up to 100 km to the nearest authorised workshop, flat tyre support, battery jump-start, emergency fuel up to 5 litres (fuel charges payable by the insured), spare key pick-up and drop, and on-site minor repairs up to 30 minutes of labour. Up to 5 services per policy year."
+    },
+    {
+      "section_number": "7.4",
+      "section_title": "Consumables Cover",
+      "parent_category": "addons",
+      "related_addon": "consumables",
+      "content": "Section 7.4 Consumables Cover\nReimburses the cost of consumables such as engine oil, gearbox oil, coolant, brake fluid, AC refrigerant gas, nuts, bolts, screws, clips, washers and grease used in the repair of the insured vehicle following an admissible own damage claim. Fuel and parts replaced during routine servicing are excluded."
+    },
+    {
+      "section_number": "7.5",
+      "section_title": "Return to Invoice",
+      "parent_category": "addons",
+      "related_addon": "return_to_invoice",
+      "content": "Section 7.5 Return to Invoice\nIn case of theft or total loss, pays the gap between the IDV and the original invoice price of the vehicle, including registration charges and road tax. Available for vehicles up to 4 years old."
+    },
+    {
+      "section_number": "7.6",
+      "section_title": "Key Protect",
+      "parent_category": "addons",
+      "related_addon": "key_replacement",
+      "content": "Section 7.6 Key Protect\nCovers the cost of replacing lost, stolen or damaged keys and, if needed, the lock set, up to Rs 50,000 per policy year. Limited to 1 claim per policy year. Includes locksmith charges if the vehicle is locked out."
+    }
+  ],
+  "Bajaj Allianz": [
+    {
+      "section_number": "1.3",
+      "section_title": "Definition of IDV",
+      "parent_category": "definitions",
+      "related_addon": null,
+      "content": "1.3 Definition of IDV\nThe Insured's Declared Value is the manufacturer's listed selling price of the vehicle less depreciation as per the following: not exceeding 6 months - 5%; exceeding 6 months up to 1 year - 15%; exceeding 1 year up to 2 years - 20%; exceeding 2 years up to 3 years - 30%; exceeding 3 years up to 4 years - 40%; exceeding 4 years up to 5 years - 50%. IDV of vehicles over 5 years old is mutually agreed."
+    },
+    {
+      "section_number": "2.1",
+      "section_title": "Section I - Own Damage",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "2.1 Section I - Own Damage\nThe Company will indemnify the insured against loss or damage to the vehicle due to fire, explosion, self-ignition, lightning, burglary, housebreaking, theft, riot, strike, malicious act, terrorism, earthquake, flood, storm, cyclone, hailstorm, inundation, landslide, rockslide, accidental external means, and whilst in transit by road, rail, inland waterway, lift, elevator or air."
+    },
+    {
+      "section_number": "2.2",
+      "section_title": "Rate of Depreciation for Parts",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "2.2 Rate of Depreciation for Parts\nRubber, nylon and plastic parts, tyres, tubes and batteries - 50%; fibreglass components - 30%; glass parts - nil. Metal parts: not exceeding 6 months - nil; 6 months to 1 year - 5%; 1 to 2 years - 10%; 2 to 3 years - 15%; 3 to 4 years - 25%; 4 to 5 years - 35%; 5 to 10 years - 40%; exceeding 10 years - 50%."
+    },
+    {
+      "section_number": "3.1",
+      "section_title": "Section II - Liability to Third Parties",
+      "parent_category": "coverage",
+      "related_addon": null,
+      "content": "3.1 Section II - Liability to Third Parties\nThe Company will indemnify the insured against legal liability for death of or bodily injury to any person caused by the use of the vehicle, without limit as required by the Motor Vehicles Act, 1988, and for damage to property of third parties up to Rs 7,50,000."
+    },
+    {
+      "section_number": "4.1",
+      "section_title": "General Exceptions",
+      "parent_category": "exclusions",
+      "related_addon": null,
+      "content": "4.1 General Exceptions\nThe Company is not liable for: loss or damage outside the geographical area; contractual liability; use of the vehicle other than in accordance with the limitations as to use; driving by a person not holding a valid licence or under the influence of alcohol or drugs; consequential loss, wear and tear, mechanical or electrical breakdown; loss arising from war, nuclear weapons material or ionising radiation; damage to tyres and tubes unless the vehicle is damaged at the same time, in which case liability is limited to 50% of the replacement cost."
+    },
+    {
+      "section_number": "5.1",
+      "section_title": "No Claim Bonus",
+      "parent_category": "ncb",
+      "related_addon": null,
+      "content": "5.1 No Claim Bonus\nAn NCB discount on the own damage premium is earned for claim-free policy years: 20% for one year, 25% for two, 35% for three, 45% for four and 50% for five or more consecutive years. The NCB becomes nil if a claim is lodged. NCB is retained if renewal happens within 90 days of expiry and is transferable to a new vehicle of the same class. An optional NCB Protection add-on allows up to 2 claims per year without loss of NCB."
+    },
+    {
+      "section_number": "6.1",
+      "section_title": "Claim Notification and Documents",
+      "parent_category": "claims",
+      "related_addon": null,
+      "content": "6.1 Claim Notification and Documents\nNotice of any accident or loss must be given to the Company within 7 days, or immediately in case of theft along with an FIR. Claims can be registered via the Caringly Yours app, website or toll-free number. Motor on-the-spot (OTS) settlement is available for claims up to Rs 30,000 via the app. Cashless repairs are available at network garages. Required documents: claim form, RC, driving licence, policy copy, FIR where applicable and repair bills."
+    },
+    {
+      "section_number": "7.1",
+      "section_title": "Depreciation Shield",
+      "parent_category": "addons",
+      "related_addon": "zero_dep",
+      "content": "7.1 Depreciation Shield\nNo depreciation is deducted on parts replaced under an admissible own damage claim. For vehicles up to 3 years old, 2 claims per policy year are allowed; for vehicles above 3 and up to 5 years old, 1 claim per policy year is allowed. Not available for vehicles older than 5 years."
+    },
+    {
+      "section_number": "7.2",
+      "section_title": "Engine Protector",
+      "parent_category": "addons",
+      "related_addon": "engine_protection",
+      "content": "7.2 Engine Protector\nCovers repair or replacement of engine parts, gearbox parts and the cost of lubricants and consumables used in such repair, where damage results from water ingression or leakage of lubricating oil. Available only for vehicles up to 3 years old. Excludes damage covered under the manufacturer's warranty and damage due to continued running of the vehicle after water ingress."
+    },
+    {
+      "section_number": "7.3",
+      "section_title": "24x7 Spot Assistance",
+      "parent_category": "addons",
+      "related_addon": "roadside_assistance",
+      "content": "7.3 24x7 Spot Assistance\nProvides towing up to 25 km from the location of breakdown, flat tyre replacement, battery jump-start, fuel arrangement up to 5 litres (charged to the insured), key retrieval and minor on-site repairs. Accommodation benefit of up to Rs 2,000 if the vehicle breaks down more than 100 km from the insured's residence. Up to 3 services per policy year."
+    },
+    {
+      "section_number": "7.4",
+      "section_title": "Consumable Expenses",
+      "parent_category": "addons",
+      "related_addon": "consumables",
+      "content": "7.4 Consumable Expenses\nCovers consumable items such as engine oil, brake oil, coolant, nuts, bolts, screws, washers and grease used in repair of the insured vehicle under an admissible own damage claim. The cost of fuel and consumables used in routine servicing is excluded."
+    },
+    {
+      "section_number": "7.5",
+      "section_title": "Return to Invoice",
+      "parent_category": "addons",
+      "related_addon": "return_to_invoice",
+      "content": "7.5 Return to Invoice\nIn the case of theft or total loss, the Company pays the difference between the IDV and the invoice value, plus registration and road tax. Available for vehicles up to 3 years old."
+    },
+    {
+      "section_number": "7.6",
+      "section_title": "Key and Lock Replacement",
+      "parent_category": "addons",
+      "related_addon": "key_replacement",
+      "content": "7.6 Key and Lock Replacement\nReimburses the cost of replacing lost or stolen keys and the lock set up to Rs 10,000 per policy year. Limited to 1 claim per policy year. Loss must be reported to the police within 48 hours."
+    }
+  ]
+}
